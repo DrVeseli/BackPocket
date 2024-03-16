@@ -45,7 +45,7 @@ func main() {
 
 	// Execute commands sequentially
 	commands := []string{
-		"sudo apt-get install nginx -y",
+		//"sudo apt-get install nginx -y",
 		"sudo apt-get install p7zip-full",
 		"mkdir /var/www/pocketbase && cd /var/www/pocketbase && wget https://github.com/pocketbase/pocketbase/releases/download/v0.22.4/pocketbase_0.22.4_linux_amd64.zip && unzip pocketbase_0.22.4_linux_amd64.zip && rm pocketbase_0.22.4_linux_amd64.zip",
 		"cd /lib/systemd/system && touch pocketbase.service",
@@ -61,7 +61,7 @@ func main() {
 		RestartSec     = 5s
 		StandardOutput = append:/var/www/pocketbase/errors.log
 		StandardError  = append:/var/www/pocketbase/errors.log
-		ExecStart      = /var/www/pocketbase/pocketbase serve
+		ExecStart      = /var/www/pocketbase/pocketbase serve ` + serverIP + `:80
 		
 		[Install]
 		WantedBy = multi-user.target' > /lib/systemd/system/pocketbase.service`,
@@ -69,31 +69,31 @@ func main() {
 
 		"sudo systemctl enable pocketbase",
 		"sudo systemctl start pocketbase",
-		"cd /etc/nginx/sites-available && touch pocketbase",
-		`echo 'server {
-			      listen 80;
-			      server_name ` + serverIP + `;
-			      client_max_body_size 10M;
-		
-			      location / {
-			              # check http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive
-			              proxy_set_header Connection '';
-			              proxy_http_version 1.1;
-			              proxy_read_timeout 360s;
-		
-			              proxy_set_header Host \$host;
-			              proxy_set_header X-Real-IP \$remote_addr;
-			             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-			              proxy_set_header X-Forwarded-Proto \$scheme;
-		
-			              # enable if you are serving under a subpath location
-			              # rewrite /yourSubpath/(.*) /\$1  break;
-		
-			              proxy_pass http://127.0.0.1:8090;
-			      }
-		}' >> pocketbase.service`,
-		"sudo ln -s /etc/nginx/sites-available/pocketbase /etc/nginx/sites-enabled",
-		"sudo systemctl restart nginx",
+		//"cd /etc/nginx/sites-available && touch pocketbase",
+		// `echo 'server {
+		// 	      listen 80;
+		// 	      server_name ` + serverIP + `;
+		// 	      client_max_body_size 10M;
+
+		// 	      location / {
+		// 	              # check http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive
+		// 	              proxy_set_header Connection '';
+		// 	              proxy_http_version 1.1;
+		// 	              proxy_read_timeout 360s;
+
+		// 	              proxy_set_header Host \$host;
+		// 	              proxy_set_header X-Real-IP \$remote_addr;
+		// 	             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+		// 	              proxy_set_header X-Forwarded-Proto \$scheme;
+
+		// 	              # enable if you are serving under a subpath location
+		// 	              # rewrite /yourSubpath/(.*) /\$1  break;
+
+		// 	              proxy_pass http://127.0.0.1:8090;
+		// 	      }
+		// }' >> pocketbase.service`,
+		// "sudo ln -s /etc/nginx/sites-available/pocketbase /etc/nginx/sites-enabled",
+		// "sudo systemctl restart nginx",
 	}
 
 	for _, cmd := range commands {
