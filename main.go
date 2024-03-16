@@ -46,8 +46,8 @@ func main() {
 	// Execute commands sequentially
 	commands := []string{
 		//"sudo apt-get install nginx -y",
-		"sudo apt-get install p7zip-full",
-		"mkdir /var/www/pocketbase && cd /var/www/pocketbase && wget https://github.com/pocketbase/pocketbase/releases/download/v0.22.4/pocketbase_0.22.4_linux_amd64.zip && unzip pocketbase_0.22.4_linux_amd64.zip && rm pocketbase_0.22.4_linux_amd64.zip",
+		"sudo apt-get install unzip -y",
+		"mkdir /var/www && mkdir /var/www/pocketbase && cd /var/www/pocketbase && wget https://github.com/pocketbase/pocketbase/releases/download/v0.22.4/pocketbase_0.22.4_linux_amd64.zip && unzip pocketbase_0.22.4_linux_amd64.zip && rm pocketbase_0.22.4_linux_amd64.zip",
 		"cd /lib/systemd/system && touch pocketbase.service",
 		`echo '[Unit]
 		Description = pocketbase
@@ -61,7 +61,7 @@ func main() {
 		RestartSec     = 5s
 		StandardOutput = append:/var/www/pocketbase/errors.log
 		StandardError  = append:/var/www/pocketbase/errors.log
-		ExecStart      = /var/www/pocketbase/pocketbase serve ` + serverIP + `:80
+		ExecStart      = /var/www/pocketbase/pocketbase serve --http ` + serverIP + `:80
 		
 		[Install]
 		WantedBy = multi-user.target' > /lib/systemd/system/pocketbase.service`,
